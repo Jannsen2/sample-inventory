@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html ng-app="inventory">
+<head>
+    <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ionics Shop Inventory</title>
+    <link rel="stylesheet" href="/styles/main.css" media="screen" title="no title">
+		<link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="lib/bootstrap/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="css/inventory.css">
+	<script type="text/javascript" src="lib/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/ppinventory.js"></script>
+</head>
+
+<body>
+    <div class="main-container">
+        <header ng-controller="HeaderController as header">
+            <h1>Ionics Shop Inventory</h1>
+            <form class="login" ng-submit="submitLogin(login)" method="post">
+              <label for="login">Login</label>
+              <input ng-model="login.name" type="text" placeholder="User Name" value="login.name">
+              <input type="submit" value="Login">
+            </form>
+            <div class="logged-in" ng-model="logged.name">{{logged.name}}</div>
+            <div class="logged-in" ng-model="logged.time">{{logged.time | date:'MMM d - h:mm a'}}</div>
+        </header>
+        <main ng-controller="InventoryController">
+            <div class="entry-form-container">
+                <form class="enter-inventory" name="enterInventory" ng-submit="submit(newItem)">
+                    <ul>
+                        <li>
+                            <h3 class="input-field-prompts">Product Name:</h3>
+                            <input type="text" class="input-fields" ng-required="true" ng-model="newItem.name">
+                        </li>
+                        <li>
+                            <h3 class="input-field-prompts">Product Price:</h3>
+                            <input type="number" class="input-fields" ng-required="true" min="0" ng-model="newItem.price">
+                        </li>
+                        <li>
+                            <h3 class="input-field-prompts">Product Quantity:</h3>
+                            <input type="number" class="input-fields" ng-required="true"  min="0" ng-model="newItem.quantity">
+                        </li>
+                        <li>
+                            <h3 class="input-field-prompts">Product Discount:</h3>
+                            <input type="number"  min="0" class="input-fields" ng-model="newItem.discount">
+                        </li>
+                        <li><input type="submit" value="Add Item" ng-disabled="enter-inventory.$invalid"></li>
+                    </ul>
+                </form>
+            </div>
+            <table>
+                <tr>
+                    <th><a href="" ng-click="orderByField='name'; reverseSort = !reverseSort">Name</a></th>
+                    <th><a href="" ng-click="orderByField='adjustedPrice'; reverseSort = !reverseSort">Price w/tax</a></th>
+					<th><a href="" ng-click="orderByField='quantity'; reverseSort = !reverseSort">Quantity</a></th>
+				</tr>
+                <tr ng-repeat="item in allItems | orderBy:orderByField:reverseSort">
+                    <td ng-model="item.name" data-id="{{item.id}}">{{item.name}}</td>
+                    <td>{{adjustedPrice(item) | currency}}
+                        <img src="{{saleTag(item)}}">
+                    </td>
+                    <td>
+                        <input class="manual-quantity-input"
+                        type="number"
+                        name="line-quantity" ng-model="item.quantity" ng-change="updateQty(item)">
+                    </td>
+					
+				</tr>
+            </table>
+        </main>
+    </div>
+    <script src="./node_modules/angular/angular.js"></script>
+    <script src="./node_modules/angular-local-storage/dist/angular-local-storage.min.js"></script>
+    <script src="./js/app.js"></script>
+    <script src="./js/controllers/inventory.controller.js"></script>
+    <script src="./js/controllers/header.controller.js"></script>
+    <script src="./js/services/inventory.service.js"></script>
+    <script src="./js/services/user.service.js"></script>
+</body>
+
+</html>
